@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Would You Rather?</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #f7f7fa;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+    .card-container {
+      display: flex;
+      flex: 1 1 auto;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 80vh;
+      position: relative;
+    }
+    .card {
+      min-width: 320px;
+      max-width: 90vw;
+      min-height: 180px;
+      max-height: 60vh;
+      background: linear-gradient(135deg, #3a3a7c 0%, #7c3aed 60%, #a855f7 100%);
+      border: none;
+      border-radius: 32px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      padding: 2.5rem 2rem;
+      transition: background 0.3s, transform 0.6s cubic-bezier(.68,-0.55,.27,1.55), opacity 0.6s;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotateY(0deg);
+      z-index: 2;
+      will-change: transform, opacity;
+    }
+    .card.animate-out {
+      animation: cardOutCircular 0.6s forwards;
+      z-index: 1;
+    }
+    .card.animate-in {
+      animation: cardInCircular 0.6s forwards;
+      z-index: 3;
+    }
+    @keyframes cardOutCircular {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+      }
+      60% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) rotate(30deg) scale(0.95) translateX(30px) translateY(-10px);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(120%, -120%) rotate(90deg) scale(0.7);
+      }
+    }
+    @keyframes cardInCircular {
+      0% {
+        opacity: 0;
+        transform: translate(-120%, 120%) rotate(-90deg) scale(0.7);
+      }
+      40% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) rotate(-30deg) scale(0.95) translateX(-30px) translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+      }
+    }
+    .refresh-btn {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #ff69b4 40%, #00e6ff 100%);
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: box-shadow 0.2s;
+    }
+    .refresh-btn:active {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    }
+    .refresh-icon {
+      width: 36px;
+      height: 36px;
+      fill: #fff;
+      display: block;
+    }
+    @media (max-width: 600px) {
+      .card {
+        font-size: 1.3rem;
+        min-width: 80vw;
+        padding: 1.5rem 1rem;
+      }
+      .refresh-btn {
+        width: 56px;
+        height: 56px;
+      }
+      .refresh-icon {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="card" id="question-card">Would you rather have the ability to fly or be invisible?</div>
+  </div>
+  <button class="refresh-btn" id="refresh-btn" aria-label="Next question">
+    <svg class="refresh-icon" viewBox="-40 -40 570 570" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 70%; height: 70%; display: block; margin: auto;">
+      <path d="M460.656,132.911c-58.7-122.1-212.2-166.5-331.8-104.1c-9.4,5.2-13.5,16.6-8.3,27c5.2,9.4,16.6,13.5,27,8.3 c99.9-52,227.4-14.9,276.7,86.3c65.4,134.3-19,236.7-87.4,274.6c-93.1,51.7-211.2,17.4-267.6-70.7l69.3,14.5 c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-122.8-25c-20.6-2-25,16.6-23.9,22.9l15.6,123.8 c1,10.4,9.4,17.7,19.8,17.7c12.8,0,20.8-12.5,19.8-23.9l-6-50.5c57.4,70.8,170.3,131.2,307.4,68.2 C414.856,432.511,548.256,314.811,460.656,132.911z" fill="#fff" stroke="#fff" stroke-width="30" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <script>
+    const questions = [
+      "Would you rather have the ability to fly or be invisible?",
+      "Would you rather always have to sing instead of speaking or dance everywhere you go?",
+      "Would you rather live without the internet or live without air conditioning and heating?",
+      "Would you rather be able to teleport anywhere or be able to read minds?",
+      "Would you rather fight one horse-sized duck or a hundred duck-sized horses?",
+      "Would you rather never have to sleep or never have to eat?",
+      "Would you rather be the funniest person in the room or the most intelligent?",
+      "Would you rather have a rewind button or a pause button on your life?",
+      "Would you rather be able to talk to animals or speak all foreign languages?",
+      "Would you rather always be 10 minutes late or always be 20 minutes early?"
+    ];
+
+    function getRandomBrightColor() {
+      // HSL: high saturation, high lightness, random hue
+      const hue = Math.floor(Math.random() * 360);
+      return `hsl(${hue}, 90%, 60%)`;
+    }
+
+    let currentIndex = 0;
+    let lastIndex = -1;
+    const card = document.getElementById('question-card');
+    const refreshBtn = document.getElementById('refresh-btn');
+
+    function pickRandomIndex() {
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * questions.length);
+      } while (idx === currentIndex && questions.length > 1);
+      return idx;
+    }
+
+    function showNextQuestion(animate = true) {
+      lastIndex = currentIndex;
+      currentIndex = pickRandomIndex();
+      const nextQuestion = questions[currentIndex];
+      const gradients = [
+        'linear-gradient(135deg, #3a3a7c 0%, #7c3aed 60%, #a855f7 100%)', // purple
+        'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)', // blue
+        'linear-gradient(135deg, #ff512f 0%, #dd2476 100%)', // red-pink
+        'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', // green
+        'linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%)', // pink-blue
+        'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)', // orange-yellow
+        'linear-gradient(135deg, #00c3ff 0%, #ffff1c 100%)', // blue-yellow
+        'linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)', // magenta-orange
+        'linear-gradient(135deg, #43cea2 0%, #185a9d 100%)', // teal-blue
+        'linear-gradient(135deg, #f953c6 0%, #b91d73 100%)', // pink-purple
+        'linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%)', // coral-lightblue
+        'linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)', // violet-pink
+        'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)', // orange-yellow
+        'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)', // cyan-blue
+        'linear-gradient(135deg, #f857a6 0%, #ff5858 100%)', // pink-red
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' // green-cyan
+      ];
+      if (typeof showNextQuestion.gradientIndex === 'undefined') {
+        showNextQuestion.gradientIndex = 0;
+      }
+      showNextQuestion.gradientIndex = (showNextQuestion.gradientIndex + 1) % gradients.length;
+      const nextGradient = gradients[showNextQuestion.gradientIndex];
+      if (animate) {
+        card.classList.add('animate-out');
+        setTimeout(() => {
+          card.style.background = nextGradient;
+          card.textContent = nextQuestion;
+          card.classList.remove('animate-out');
+          card.classList.add('animate-in');
+          setTimeout(() => {
+            card.classList.remove('animate-in');
+          }, 600);
+        }, 600);
+      } else {
+        card.style.background = nextGradient;
+        card.textContent = nextQuestion;
+      }
+    }
+
+    refreshBtn.addEventListener('click', () => {
+      showNextQuestion();
+    });
+
+    // On page load, pick a random question and gradient, set them, and animate in
+    window.addEventListener('DOMContentLoaded', () => {
+      const gradients = [
+        'linear-gradient(135deg, #3a3a7c 0%, #7c3aed 60%, #a855f7 100%)',
+        'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+        'linear-gradient(135deg, #ff512f 0%, #dd2476 100%)',
+        'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+        'linear-gradient(135deg, #fc5c7d 0%, #6a82fb 100%)',
+        'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
+        'linear-gradient(135deg, #00c3ff 0%, #ffff1c 100%)',
+        'linear-gradient(135deg, #ee0979 0%, #ff6a00 100%)',
+        'linear-gradient(135deg, #43cea2 0%, #185a9d 100%)',
+        'linear-gradient(135deg, #f953c6 0%, #b91d73 100%)',
+        'linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%)',
+        'linear-gradient(135deg, #c471f5 0%, #fa71cd 100%)',
+        'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)',
+        'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
+        'linear-gradient(135deg, #f857a6 0%, #ff5858 100%)',
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+      ];
+      // Pick random question and gradient
+      currentIndex = Math.floor(Math.random() * questions.length);
+      showNextQuestion.gradientIndex = Math.floor(Math.random() * gradients.length);
+      card.textContent = questions[currentIndex];
+      card.style.background = gradients[showNextQuestion.gradientIndex];
+      // Animate in
+      card.classList.add('animate-in');
+      setTimeout(() => {
+        card.classList.remove('animate-in');
+      }, 600);
+    });
+
+    // Shake detection (mobile)
+    let lastShake = 0;
+    let lastX = null, lastY = null, lastZ = null;
+    const SHAKE_THRESHOLD = 15; // tune as needed
+    window.addEventListener('devicemotion', function(event) {
+      if (!event.accelerationIncludingGravity) return;
+      const { x, y, z } = event.accelerationIncludingGravity;
+      if (lastX !== null && lastY !== null && lastZ !== null) {
+        const deltaX = Math.abs(x - lastX);
+        const deltaY = Math.abs(y - lastY);
+        const deltaZ = Math.abs(z - lastZ);
+        if ((deltaX + deltaY + deltaZ) > SHAKE_THRESHOLD) {
+          const now = Date.now();
+          if (now - lastShake > 1000) { // 1s cooldown
+            showNextQuestion();
+            lastShake = now;
+          }
+        }
+      }
+      lastX = x;
+      lastY = y;
+      lastZ = z;
+    });
+
+    // Optional: allow pressing spacebar for next question (desktop)
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        showNextQuestion();
+      }
+    });
+  </script>
+</body>
+</html>
